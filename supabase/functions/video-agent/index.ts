@@ -3,8 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.48.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-worker-secret",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-worker-secret",
   "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
 };
 
@@ -30,13 +29,10 @@ Deno.serve(async (req: Request) => {
   const githubPat = (Deno.env.get("GITHUB_PAT") ?? "").trim();
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    return new Response(
-      JSON.stringify({ error: "Missing Supabase service environment variables" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: "Missing Supabase service environment variables" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -54,13 +50,10 @@ Deno.serve(async (req: Request) => {
         .maybeSingle();
 
       if (error || !video) {
-        return new Response(
-          JSON.stringify({ ok: false, error: error?.message || "Video not found" }),
-          {
-            status: 404,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          },
-        );
+        return new Response(JSON.stringify({ ok: false, error: error?.message || "Video not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       return new Response(JSON.stringify({ ok: true, video }), {
@@ -95,8 +88,7 @@ Deno.serve(async (req: Request) => {
         .single();
 
       if (fetchError || !video) throw new Error(`Video not found: ${videoId}`);
-      if (!githubPat)
-        throw new Error("GITHUB_PAT secret is not configured in Supabase environment.");
+      if (!githubPat) throw new Error("GITHUB_PAT secret is not configured in Supabase environment.");
 
       // Dispatch to GitHub Video Engine
       const res = await fetch(GITHUB_DISPATCH_URL, {
@@ -128,11 +120,7 @@ Deno.serve(async (req: Request) => {
         const detail = (await res.text()).slice(0, 300);
         await supabase
           .from("videos")
-          .update({
-            status: "failed",
-            step: "failed",
-            error: `GitHub dispatch refused (${res.status}): ${detail}`,
-          })
+          .update({ status: "failed", step: "failed", error: `GitHub dispatch refused (${res.status}): ${detail}` })
           .eq("id", videoId);
         throw new Error(`Dispatch failed: ${detail}`);
       }
@@ -216,9 +204,7 @@ Deno.serve(async (req: Request) => {
               image_style: videoConfig.image_style,
               aspect_ratio: videoConfig.aspect_ratio,
               duration_seconds: String(videoConfig.duration_seconds),
-              captions: videoConfig.captions
-                ? captionSizeToken(videoConfig.caption_style)
-                : "false",
+              captions: videoConfig.captions ? captionSizeToken(videoConfig.caption_style) : "false",
             },
           }),
         });

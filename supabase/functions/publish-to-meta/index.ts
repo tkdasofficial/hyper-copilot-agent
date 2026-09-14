@@ -7,8 +7,7 @@ const THREADS_GRAPH = "https://graph.threads.net/v1.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-worker-secret",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-worker-secret",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -36,10 +35,7 @@ type PublishRequest = {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function postJson(
-  url: string,
-  body: Record<string, string>,
-): Promise<Record<string, unknown>> {
+async function postJson(url: string, body: Record<string, string>): Promise<Record<string, unknown>> {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -225,12 +221,7 @@ Deno.serve(async (req: Request) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-    let targetsToPublish: {
-      target: Target;
-      action: ActionType;
-      caption: string;
-      mediaUrl: string;
-    }[] = [];
+    let targetsToPublish: { target: Target; action: ActionType; caption: string; mediaUrl: string }[] = [];
 
     if (body.workflow_id && supabaseUrl && supabaseServiceKey) {
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -271,11 +262,8 @@ Deno.serve(async (req: Request) => {
         mediaUrl,
       });
 
-      const isVideo =
-        workflow.action_type === "publish_reel" || workflow.action_type === "crosspost";
-      const action = (
-        isVideo && workflow.action_type === "publish_post" ? "publish_reel" : workflow.action_type
-      ) as ActionType;
+      const isVideo = workflow.action_type === "publish_reel" || workflow.action_type === "crosspost";
+      const action = (isVideo && workflow.action_type === "publish_post" ? "publish_reel" : workflow.action_type) as ActionType;
 
       targetsToPublish = (connections ?? []).map((c) => ({
         target: c as Target,
@@ -287,25 +275,17 @@ Deno.serve(async (req: Request) => {
       const caption = buildCaption(body);
       const mediaUrl = body.mediaUrl || body.media_url || "";
       const action = body.action || body.action_type || "publish_post";
-      targetsToPublish = [
-        {
-          target: body.target,
-          action,
-          caption,
-          mediaUrl,
-        },
-      ];
+      targetsToPublish = [{
+        target: body.target,
+        action,
+        caption,
+        mediaUrl,
+      }];
     } else {
       throw new Error("Invalid request: provide either 'workflow_id' or 'target' object.");
     }
 
-    const results: {
-      targetId: string;
-      account: string;
-      ok: boolean;
-      postId?: string;
-      error?: string;
-    }[] = [];
+    const results: { targetId: string; account: string; ok: boolean; postId?: string; error?: string }[] = [];
 
     for (const item of targetsToPublish) {
       try {

@@ -3,8 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.48.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-worker-secret",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-worker-secret",
   "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
 };
 
@@ -197,8 +196,7 @@ Deno.serve(async (req: Request) => {
       }
     } else if (req.method === "GET") {
       const url = new URL(req.url);
-      workflowId =
-        url.searchParams.get("workflowId") || url.searchParams.get("workflow_id") || undefined;
+      workflowId = url.searchParams.get("workflowId") || url.searchParams.get("workflow_id") || undefined;
       force = url.searchParams.get("force") === "true";
     }
 

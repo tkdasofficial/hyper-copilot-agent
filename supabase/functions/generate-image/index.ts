@@ -5,8 +5,7 @@ const PIXAZO_BASE = "https://gateway.pixazo.ai";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-worker-secret",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-worker-secret",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -44,13 +43,7 @@ Deno.serve(async (req: Request) => {
 
     const aspect = body.aspect || "1:1";
     const resolutionBase =
-      body.resolution === "1K"
-        ? 896
-        : body.resolution === "4K"
-          ? 1280
-          : body.resolution === "8K"
-            ? 1408
-            : 1024;
+      body.resolution === "1K" ? 896 : body.resolution === "4K" ? 1280 : body.resolution === "8K" ? 1408 : 1024;
     const { width, height } = sizeForAspect(aspect, resolutionBase);
 
     // Pixazo API Key resolution: from env or supabase vault secret

@@ -5,14 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { StudioLayout } from "@/components/hyper/StudioLayout";
-import {
-  Panel,
-  RatioBlocks,
-  Segment,
-  SliderRow,
-  SwitchRow,
-  TextRow,
-} from "@/components/hyper/StudioControls";
+import { Panel, RatioBlocks, Segment, SliderRow, SwitchRow, TextRow } from "@/components/hyper/StudioControls";
 import { RecentCreations } from "@/components/hyper/RecentCreations";
 import { uploadReference } from "@/lib/generation.functions";
 import { runJob } from "@/lib/jobs-runner";
@@ -42,7 +35,9 @@ export const Route = createFileRoute("/video")({
         "short form video AI",
         "1080p AI video",
       ],
-      breadcrumbs: [{ name: "Video Studio", path: "/video" }],
+      breadcrumbs: [
+        { name: "Video Studio", path: "/video" },
+      ],
     }),
   component: VideoStudio,
 });
@@ -55,24 +50,8 @@ const lockedDurations = VIDEO_DURATIONS.filter((d) => d > MAX_SELECTABLE_VIDEO_D
   (d) => `${d}s`,
 ) as unknown as readonly string[];
 const frameRates = VIDEO_FPS.map((f) => `${f} fps`) as unknown as readonly string[];
-const cameraMoves = [
-  "Static",
-  "Pan",
-  "Tilt",
-  "Dolly In",
-  "Dolly Out",
-  "Orbit",
-  "Crane",
-  "Handheld",
-] as const;
-const styles = [
-  "Cinematic",
-  "Photoreal",
-  "Anime",
-  "3D Render",
-  "Documentary",
-  "Neon Noir",
-] as const;
+const cameraMoves = ["Static", "Pan", "Tilt", "Dolly In", "Dolly Out", "Orbit", "Crane", "Handheld"] as const;
+const styles = ["Cinematic", "Photoreal", "Anime", "3D Render", "Documentary", "Neon Noir"] as const;
 
 type FrameSlot = "start" | "end";
 type FrameFile = { name: string; previewUrl: string; dataUrl: string };
@@ -256,23 +235,13 @@ function VideoStudio() {
         </Panel>
 
         <Panel title="Motion & camera" summary={`${camera} · ${motion}% motion`}>
-          <Segment
-            label="Camera movement"
-            options={cameraMoves}
-            value={camera}
-            onChange={setCamera}
-          />
+          <Segment label="Camera movement" options={cameraMoves} value={camera} onChange={setCamera} />
           <SliderRow label="Motion strength" value={motion} onChange={setMotion} suffix="%" />
         </Panel>
 
         <Panel title="Style" summary={`${style} · ${styleStrength}%`}>
           <Segment options={styles} value={style} onChange={setStyle} />
-          <SliderRow
-            label="Style strength"
-            value={styleStrength}
-            onChange={setStyleStrength}
-            suffix="%"
-          />
+          <SliderRow label="Style strength" value={styleStrength} onChange={setStyleStrength} suffix="%" />
         </Panel>
 
         <Panel title="Frame references" summary={refSummary}>
